@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apex IT Support — Enterprise IT Services</title>
+  <meta name="description" content="Explore Apex IT's full range of enterprise IT services including managed IT, cybersecurity, cloud, networking, AI automation, and compliance."/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .services-hero { padding: 160px 0 100px; background:var(--bg); position:relative; overflow:hidden; }
+    .services-hero-bg { position:absolute;inset:0; background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,0.08),transparent); }
+    .services-hero .container { position:relative;z-index:1; text-align:center; }
+    .svc-intro { font-size:1.1rem; color:var(--text-secondary); max-width:660px; margin:20px auto 0; line-height:1.7; }
+    /* Service Detail Cards */
+    .svc-list { padding:100px 0; background:var(--bg-card); }
+    [data-theme="light"] .svc-list { background:#EEF2FF; }
+    .svc-item { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; padding:80px 0; border-bottom:1px solid var(--border); }
+    .svc-item:last-child { border-bottom:none; }
+    .svc-item.reverse { direction:rtl; }
+    .svc-item.reverse > * { direction:ltr; }
+    [dir="rtl"] .svc-item.reverse { direction:ltr; }
+    [dir="rtl"] .svc-item.reverse > * { direction:rtl; }
+    .svc-visual { background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:48px; text-align:center; }
+    [data-theme="light"] .svc-visual { background:#FFFFFF; }
+    .svc-visual-icon { font-size:5rem; margin-bottom:16px; }
+    .svc-visual-label { font-size:0.85rem; color:var(--text-muted); font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+    .svc-content-tag { font-size:0.75rem; font-weight:700; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+    .svc-content-title { font-size:1.8rem; font-weight:800; margin-bottom:16px; color:var(--text-primary); }
+    .svc-content-title span { color:var(--gold); }
+    .svc-content-desc { font-size:0.95rem; color:var(--text-secondary); line-height:1.7; margin-bottom:24px; }
+    .svc-features { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+    .svc-feature { display:flex; gap:10px; align-items:flex-start; font-size:0.88rem; color:var(--text-secondary); }
+    .svc-feature::before { content:'✓'; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+    /* Mini services grid */
+    .mini-svcs { padding:100px 0; background:var(--bg); }
+    .mini-svcs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:60px; }
+    .mini-svc { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; transition:var(--transition); }
+    .mini-svc:hover { border-color:var(--gold); transform:translateY(-4px); box-shadow:var(--shadow-gold); }
+    .mini-svc-icon { font-size:2rem; margin-bottom:14px; }
+    .mini-svc h4 { font-size:0.95rem; font-weight:700; margin-bottom:8px; color:var(--text-primary); }
+    .mini-svc p { font-size:0.82rem; color:var(--text-secondary); line-height:1.5; }
+    /* SLA table */
+    .sla-section { padding:100px 0; background:var(--bg-card); }
+    [data-theme="light"] .sla-section { background:#F8F9FF; }
+    .sla-table { width:100%; border-collapse:collapse; margin-top:48px; }
+    .sla-table th { background:rgba(201,168,76,0.08); border:1px solid var(--border); padding:14px 20px; text-align:left; font-size:0.85rem; font-weight:700; color:var(--gold); }
+    [dir="rtl"] .sla-table th { text-align:right; }
+    .sla-table td { border:1px solid var(--border); padding:14px 20px; font-size:0.9rem; color:var(--text-secondary); }
+    .sla-table tr:hover td { background:rgba(201,168,76,0.04); }
+    .sla-pass { color:var(--success); font-weight:600; }
+    /* CTA */
+    .svc-cta { padding:100px 0; text-align:center; background:var(--bg); border-top:1px solid var(--border); }
+    .svc-cta h2 { font-size:clamp(1.8rem,4vw,3rem); font-weight:900; margin-bottom:16px; }
+    .svc-cta h2 span { color:var(--gold); }
+    .svc-cta p { color:var(--text-secondary); max-width:500px; margin:0 auto 36px; }
+    @media(max-width:1024px){ .svc-item,.svc-item.reverse { grid-template-columns:1fr; gap:40px; direction:ltr; } .mini-svcs-grid { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:768px){ .mini-svcs-grid { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-icon">A</div><span class="logo-text">Apex<span>IT</span></span></a>
+    <nav class="nav">
+      <div class="nav-item"><a href="index.html" class="nav-link">Home <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg></a><div class="dropdown"><a href="index.html">Home 1</a><a href="home2.html">Home 2</a></div></div>
+      <div class="nav-item"><a href="about.html" class="nav-link">About</a></div>
+      <div class="nav-item"><a href="services.html" class="nav-link active">Services</a></div>
+      <div class="nav-item"><a href="contact.html" class="nav-link">Contact</a></div>
+      <div class="nav-item"><a href="#" class="nav-link">Dashboard <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg></a><div class="dropdown"><a href="user-dashboard.html">User Dashboard</a><a href="admin-dashboard.html">Admin Dashboard</a></div></div>
+    </nav>
+    <div class="header-controls">
+      <button class="ctrl-btn" data-dir-toggle><i data-lucide="globe" class="dir-icon"></i></button>
+      <button class="ctrl-btn" data-theme-toggle><i data-lucide="sun" class="theme-icon"></i></button>
+      <a href="login.html" class="btn-login">Login Portal</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav-link" data-toggle="mob-home-drop">Home <span class="mob-arrow">▾</span></div>
+  <div class="mobile-dropdown" id="mob-home-drop"><a href="index.html">Home 1</a><a href="home2.html">Home 2</a></div>
+  <a href="about.html" class="mobile-nav-link">About</a>
+  <a href="services.html" class="mobile-nav-link">Services</a>
+  <a href="contact.html" class="mobile-nav-link">Contact</a>
+  <div class="mobile-nav-link" data-toggle="mob-dash-drop">Dashboard <span class="mob-arrow">▾</span></div>
+  <div class="mobile-dropdown" id="mob-dash-drop"><a href="user-dashboard.html">User Dashboard</a><a href="admin-dashboard.html">Admin Dashboard</a></div>
+  <a href="login.html" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Login Portal</a>
+</div>
+
+<main>
+<section class="services-hero">
+  <div class="services-hero-bg"></div>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag"><i data-lucide="shield" style="width:16px;height:16px;vertical-align:middle;margin-right:8px"></i> Full-Spectrum IT Services</div>
+      <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem)">Enterprise IT <span>Services & Solutions</span></h1>
+      <div class="gold-divider" style="margin:16px auto"></div>
+      <p class="svc-intro">From day-to-day managed support to complex multi-cloud transformation, Apex IT delivers the expertise and technology to keep your business operating at peak performance.</p>
+    </div>
+  </div>
+</section>
+
+<section class="svc-list">
+  <div class="container">
+    <!-- Managed IT -->
+    <div class="svc-item reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="it1.jpg" alt="Managed IT Support" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Core Service</div>
+        <h2 class="svc-content-title">Managed IT <span>Support</span></h2>
+        <p class="svc-content-desc">Our flagship managed IT service provides your business with a full-spectrum IT department at a fraction of the cost. From helpdesk to infrastructure management, we handle it all.</p>
+        <div class="svc-features">
+          <div class="svc-feature">24/7/365 helpdesk with &lt;15 min P1 response</div>
+          <div class="svc-feature">Proactive monitoring across all endpoints and servers</div>
+          <div class="svc-feature">Patch management and software deployment</div>
+          <div class="svc-feature">On-site and remote support capabilities</div>
+          <div class="svc-feature">Monthly IT performance and SLA reports</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Get a Quote</a>
+      </div>
+    </div>
+    <!-- Cybersecurity -->
+    <div class="svc-item reverse reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="cy1.jpg" alt="Advanced Cybersecurity" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Security</div>
+        <h2 class="svc-content-title">Advanced <span>Cybersecurity</span></h2>
+        <p class="svc-content-desc">Protect your organisation from sophisticated cyber threats with our multi-layered, AI-powered security stack and 24/7 SOC monitoring.</p>
+        <div class="svc-features">
+          <div class="svc-feature">24/7 Security Operations Centre (SOC)</div>
+          <div class="svc-feature">SIEM, SOAR, and threat intelligence integration</div>
+          <div class="svc-feature">Zero-trust network access (ZTNA) implementation</div>
+          <div class="svc-feature">Endpoint detection and response (EDR/XDR)</div>
+          <div class="svc-feature">Penetration testing and vulnerability assessments</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Secure Your Business</a>
+      </div>
+    </div>
+    <!-- Cloud -->
+    <div class="svc-item reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="cloud.jpg" alt="Cloud Services" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Cloud</div>
+        <h2 class="svc-content-title">Cloud <span>Architecture & Migration</span></h2>
+        <p class="svc-content-desc">Migrate, optimise, and govern your cloud environments with our certified cloud architects across AWS, Azure, and Google Cloud Platform.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Cloud readiness assessment and migration planning</div>
+          <div class="svc-feature">Hybrid and multi-cloud architecture design</div>
+          <div class="svc-feature">FinOps and cloud cost optimisation</div>
+          <div class="svc-feature">Kubernetes and containerisation</div>
+          <div class="svc-feature">Cloud governance and security posture management</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Start Cloud Journey</a>
+      </div>
+    </div>
+    <!-- Networking -->
+    <div class="svc-item reverse reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="inf1.jpg" alt="Networking & Infrastructure" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Connectivity</div>
+        <h2 class="svc-content-title">Enterprise <span>Networking & SD-WAN</span></h2>
+        <p class="svc-content-desc">Build a resilient, high-performance backbone for your business with our software-defined networking solutions and global connectivity mesh.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Next-Gen SD-WAN for branch & remote connectivity</div>
+          <div class="svc-feature">High-density wireless (Wi-Fi 6E) implementation</div>
+          <div class="svc-feature">Global MPLS and low-latency fiber circuits</div>
+          <div class="svc-feature">Network performance monitoring (NPMX)</div>
+          <div class="svc-feature">Intelligent traffic shaping and load balancing</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Optimise Network</a>
+      </div>
+    </div>
+    <!-- AI & Automation -->
+    <div class="svc-item reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="intell.webp" alt="AI & Automation" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Automation</div>
+        <h2 class="svc-content-title">AIOps & <span>Intelligent Automation</span></h2>
+        <p class="svc-content-desc">Leverage the power of machine learning to predict failures before they happen and automate repetitive manual processes across your IT stack.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Predictive telemetry and infrastructure monitoring</div>
+          <div class="svc-feature">Robotic Process Automation (RPA) for business logic</div>
+          <div class="svc-feature">Self-healing systems and auto-remediation</div>
+          <div class="svc-feature">Custom ML models for business intelligence</div>
+          <div class="svc-feature">AI-powered helpdesk automation & chatbots</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Automate Now</a>
+      </div>
+    </div>
+    <!-- Compliance -->
+    <div class="svc-item reverse reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="gov.avif" alt="Global Compliance" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Risk & Compliance</div>
+        <h2 class="svc-content-title">Global <span>Compliance & Security Governance</span></h2>
+        <p class="svc-content-desc">Navigate complex regulatory landscapes with ease. We help you achieve and maintain the highest global security standards and frameworks.</p>
+        <div class="svc-features">
+          <div class="svc-feature">ISO 27001, SOC 2, and HIPAA readiness</div>
+          <div class="svc-feature">Continuous compliance monitoring and auditing</div>
+          <div class="svc-feature">Data privacy (GDPR/CCPA) management</div>
+          <div class="svc-feature">Internal policy development and staff training</div>
+          <div class="svc-feature">Third-party risk and vendor management</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Ensure Compliance</a>
+      </div>
+    </div>
+    <!-- Digital Workspace -->
+    <div class="svc-item reveal">
+      <div class="svc-visual" style="padding:0;overflow:hidden;border:none">
+        <img src="comp.webp" alt="Digital Workspace" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div>
+        <div class="svc-content-tag">Digital Workspace</div>
+        <h2 class="svc-content-title">Modern <span>Employee Productivity</span></h2>
+        <p class="svc-content-desc">Empower your workforce with a seamless digital environment. We provide the tools and support to make work happen anywhere, on any device.</p>
+        <div class="svc-features">
+          <div class="svc-feature">Microsoft 365 & Google Workspace management</div>
+          <div class="svc-feature">Virtual Desktop Infrastructure (VDI) & DaaS</div>
+          <div class="svc-feature">Unified Communications (Teams, Zoom, VoIP)</div>
+          <div class="svc-feature">Secure Remote Access and BYOD policies</div>
+          <div class="svc-feature">Asset tracking and MDM (Intune/Jamf)</div>
+        </div>
+        <a href="contact.html" class="btn btn-primary">Modernise Workplace</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional Services -->
+<section class="mini-svcs">
+  <div class="container">
+    <div class="section-header text-center reveal">
+      <div class="section-tag"><i data-lucide="plus" style="width:16px;height:16px;vertical-align:middle;margin-right:8px"></i> Additional Services</div>
+      <h2 class="section-title">Our Extended <span>Service Portfolio</span></h2>
+      <div class="gold-divider"></div>
+    </div>
+    <div class="mini-svcs-grid">
+      <div class="mini-svc reveal"><div class="mini-svc-icon"><i data-lucide="globe"></i></div><h4>Network Infrastructure</h4><p>LAN/WAN design, SD-WAN, wireless, and network performance optimisation.</p></div>
+      <div class="mini-svc reveal reveal-delay-1"><div class="mini-svc-icon"><i data-lucide="database"></i></div><h4>Backup & Recovery</h4><p>Automated backup, disaster recovery, and business continuity planning.</p></div>
+      <div class="mini-svc reveal reveal-delay-2"><div class="mini-svc-icon"><i data-lucide="bot"></i></div><h4>AI & Automation</h4><p>AIOps, RPA, intelligent process automation, and predictive analytics.</p></div>
+      <div class="mini-svc reveal reveal-delay-3"><div class="mini-svc-icon"><i data-lucide="clipboard-list"></i></div><h4>Compliance Management</h4><p>ISO 27001, SOC 2, GDPR, HIPAA, and PCI DSS framework implementation.</p></div>
+      <div class="mini-svc reveal"><div class="mini-svc-icon"><i data-lucide="phone"></i></div><h4>VoIP & Unified Comms</h4><p>Cloud telephony, Microsoft Teams integration, and unified communication platforms.</p></div>
+      <div class="mini-svc reveal reveal-delay-1"><div class="mini-svc-icon"><i data-lucide="printer"></i></div><h4>Hardware Procurement</h4><p>Vendor-agnostic hardware sourcing, deployment, and lifecycle management.</p></div>
+      <div class="mini-svc reveal reveal-delay-2"><div class="mini-svc-icon"><i data-lucide="graduation-cap"></i></div><h4>Security Awareness Training</h4><p>Employee phishing simulations, security culture programmes, and e-learning.</p></div>
+      <div class="mini-svc reveal reveal-delay-3"><div class="mini-svc-icon"><i data-lucide="briefcase"></i></div><h4>CIO-as-a-Service</h4><p>Strategic IT leadership and CIO advisory services for SMBs without a dedicated CISO/CIO.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLA Table -->
+<section class="sla-section">
+  <div class="container">
+    <div class="section-header text-center reveal">
+      <div class="section-tag"><i data-lucide="bar-chart-3" style="width:16px;height:16px;vertical-align:middle;margin-right:8px"></i> SLA Commitments</div>
+      <h2 class="section-title">Our Contractual <span>SLA Guarantees</span></h2>
+      <div class="gold-divider"></div>
+    </div>
+    <div class="reveal" style="overflow-x:auto">
+      <table class="sla-table">
+        <thead>
+          <tr><th>Priority</th><th>Definition</th><th>Response Time</th><th>Resolution Time</th><th>Availability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="badge" style="background:rgba(239,68,68,0.15);color:#EF4444;border:1px solid rgba(239,68,68,0.3)">P1 Critical</span></td><td>Complete system outage, major security incident</td><td class="sla-pass">15 minutes</td><td class="sla-pass">4 hours</td><td class="sla-pass">24/7/365</td></tr>
+          <tr><td><span class="badge" style="background:rgba(245,158,11,0.15);color:#F59E0B;border:1px solid rgba(245,158,11,0.3)">P2 High</span></td><td>Significant degradation, partial outage</td><td class="sla-pass">1 hour</td><td class="sla-pass">8 hours</td><td class="sla-pass">24/7/365</td></tr>
+          <tr><td><span class="badge" style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.3)">P3 Medium</span></td><td>Performance issues, non-critical failures</td><td class="sla-pass">4 hours</td><td class="sla-pass">24 hours</td><td>Business hours</td></tr>
+          <tr><td><span class="badge badge-gold">P4 Low</span></td><td>General queries, enhancements, information</td><td>8 hours</td><td>72 hours</td><td>Business hours</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="svc-cta">
+  <div class="container reveal">
+    <div class="section-tag" style="margin-bottom:20px"><i data-lucide="rocket" style="width:16px;height:16px;vertical-align:middle;margin-right:8px"></i> Get Started</div>
+    <h2>Ready to Upgrade Your <span>IT Infrastructure?</span></h2>
+    <p>Schedule a free consultation with our experts. No commitment, no hidden fees — just honest advice.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="contact.html" class="btn btn-primary">Book Free Consultation</a>
+      <a href="index.html#pricing" class="btn btn-outline">View Pricing</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="margin-bottom:12px;display:inline-flex">
+          <div class="logo-icon">A</div>
+          <span class="logo-text">Apex<span>IT</span></span>
+        </a>
+        <p class="footer-text">Apex IT Support delivers premium enterprise IT solutions, cloud services, and cybersecurity to businesses worldwide since 2015.</p>
+        <div class="footer-socials" style="margin-top:20px">
+          <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
+          <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+          <a href="#" class="social-btn" aria-label="Facebook">f</a>
+          <a href="#" class="social-btn" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Platform</h4>
+        <div class="footer-links">
+          <a href="index.html" class="footer-link">Home</a>
+          <a href="home2.html" class="footer-link">Home 2</a>
+          <a href="services.html" class="footer-link">Services</a>
+          <a href="user-dashboard.html" class="footer-link">User Dashboard</a>
+          <a href="admin-dashboard.html" class="footer-link">Admin Dashboard</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Company</h4>
+        <div class="footer-links">
+          <a href="about.html" class="footer-link">About Us</a>
+          <a href="index.html#team" class="footer-link">Our Team</a>
+          <a href="index.html#awards" class="footer-link">Awards</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">Careers</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Support</h4>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Help Centre</a>
+          <a href="#" class="footer-link">Status Page</a>
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 Apex IT Support Ltd. All rights reserved. Registered in England & Wales No. 12345678.</p>
+      <div class="footer-socials">
+        <span class="badge badge-gold">ISO 27001</span>
+        <span class="badge badge-blue">SOC 2</span>
+        <span class="badge badge-green">GDPR</span>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="header.js"></script>
+</body>
+</html>

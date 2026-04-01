@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex IT — User Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+
+    .dash-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .dash-sidebar {
+      width: 260px;
+      min-height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: var(--navy-mid, #111827);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      transition: transform 0.3s ease;
+    }
+
+    [dir="rtl"] .dash-sidebar {
+      left: auto;
+      right: 0;
+      border-right: none;
+      border-left: 1px solid var(--border);
+    }
+
+    [data-theme="light"] .dash-sidebar {
+      background: #1a1f2e;
+    }
+
+    .dash-logo {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .dash-logo .logo-text {
+      color: #F0F4FF;
+    }
+
+    .dash-nav {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .dash-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6B7A99;
+      transition: var(--transition);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .dash-link:hover {
+      background: rgba(201, 168, 76, 0.08);
+      color: var(--gold);
+    }
+
+    .dash-link.active {
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .dash-link-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .dash-section-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #3B4A6A;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 12px 14px 4px;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .user-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0A0E1A;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #B0BCDB;
+    }
+
+    .user-role {
+      font-size: 0.72rem;
+      color: #4B5A7A;
+    }
+
+    /* Main Content */
+    .dash-main {
+      margin-left: 260px;
+      flex: 1;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    [dir="rtl"] .dash-main {
+      margin-left: 0;
+      margin-right: 260px;
+    }
+
+    /* Topbar */
+    .dash-topbar {
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .topbar-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .topbar-badge {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #EF4444;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* Content */
+    .dash-content {
+      padding: 32px;
+    }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.04));
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .welcome-text h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .welcome-text p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Stats Row */
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .d-stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .d-stat::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+    }
+
+    .d-stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .d-stat-lbl {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .d-stat-change {
+      font-size: 0.75rem;
+      color: var(--success);
+      margin-top: 8px;
+    }
+
+    /* Tickets */
+    .dash-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .d-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .d-panel-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .d-panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .d-panel-body {
+      padding: 0;
+    }
+
+    .ticket-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .ticket-row:last-child {
+      border: none;
+    }
+
+    .ticket-row:hover {
+      background: rgba(201, 168, 76, 0.04);
+    }
+
+    .ticket-id {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      width: 60px;
+      flex-shrink: 0;
+    }
+
+    .ticket-title {
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .ticket-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+
+    .ts-open {
+      background: rgba(239, 68, 68, 0.12);
+      color: #EF4444;
+    }
+
+    .ts-progress {
+      background: rgba(245, 158, 11, 0.12);
+      color: #F59E0B;
+    }
+
+    .ts-resolved {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10B981;
+    }
+
+    .ticket-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    [dir="rtl"] .ticket-date {
+      text-align: left;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 20px;
+    }
+
+    .qa-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      display: block;
+      text-decoration: none;
+    }
+
+    .qa-btn:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    .qa-btn-icon {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .qa-btn-text {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* Activity */
+    .activity-list {
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .act-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .act-title {
+      font-size: 0.87rem;
+      color: var(--text-primary);
+    }
+
+    .act-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Sidebar toggle btn */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: var(--gold);
+      border: none;
+      color: #0A0E1A;
+      font-size: 1.4rem;
+      z-index: 300;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+    }
+
+    [dir="rtl"] .sidebar-toggle {
+      left: auto;
+      right: 16px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-bottom: 24px;
+    }
+
+    .back-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    @media(max-width:1024px) {
+      .dash-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dash-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:768px) {
+      .sidebar-footer {
+        display: none;
+      }
+
+      .dash-sidebar {
+        transform: translateX(-100%);
+      }
+
+      .dash-sidebar.open {
+        transform: translateX(0);
+      }
+
+      [dir="rtl"] .dash-sidebar {
+        transform: translateX(100%);
+      }
+
+      [dir="rtl"] .dash-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .dash-main {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dash-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .dash-content {
+        padding: 80px 16px 20px;
+      }
+    }
+
+    @media(max-width:480px) {
+      .dash-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dash-view {
+      display: none;
+    }
+
+    .dash-view.active {
+      display: block;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-height: 350px;
+    }
+
+    .analytics-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media(max-width: 1200px) {
+      .analytics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    @media(max-width: 600px) {
+      .analytics-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    .chart-container {
+      padding: 20px;
+      height: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      height: fit-content;
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10B981;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dash-layout">
+    <!-- Sidebar -->
+    <aside class="dash-sidebar" id="dash-sidebar">
+      <div class="dash-logo" style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">A</div><span class="logo-text">Apex<span>IT</span></span>
+        </a>
+        <button id="sidebar-close"
+          style="display:none; background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; padding:0;">&times;</button>
+      </div>
+      <nav class="dash-nav" id="dash-nav">
+        <a href="#" class="dash-link active" data-view="dashboard"><i data-lucide="layout-dashboard"
+            class="dash-link-icon"></i>Dashboard</a>
+        <a href="#" class="dash-link" data-view="tickets"><i data-lucide="ticket" class="dash-link-icon"></i>My
+          Tickets</a>
+        <a href="#" class="dash-link" data-view="notifications"><i data-lucide="bell"
+            class="dash-link-icon"></i>Notifications <span
+            style="margin-left:auto;background:rgba(239,68,68,0.15);color:#EF4444;font-size:0.7rem;font-weight:700;padding:2px 7px;border-radius:50px">3</span></a>
+        <div class="dash-section-label">Services</div>
+        <a href="#" class="dash-link" data-view="cloud"><i data-lucide="cloud" class="dash-link-icon"></i>Cloud
+          Resources</a>
+        <a href="#" class="dash-link" data-view="security"><i data-lucide="shield-check"
+            class="dash-link-icon"></i>Security Reports</a>
+        <a href="#" class="dash-link" data-view="backups"><i data-lucide="database"
+            class="dash-link-icon"></i>Backups</a>
+        <div class="dash-section-label">Account</div>
+        <a href="#" class="dash-link" data-view="settings"><i data-lucide="settings"
+            class="dash-link-icon"></i>Settings</a>
+        <a href="index.html" class="dash-link" style="color:var(--danger)"><i data-lucide="log-out"
+            class="dash-link-icon"></i>Logout</a>
+        <div style="flex:1"></div>
+        <div
+          style="display:flex;align-items:center;justify-content:flex-start;gap:20px;padding:24px 14px;border-top:1px solid rgba(255,255,255,0.05)">
+          <button class="ctrl-btn" data-theme-toggle
+            style="background:transparent;border:none;cursor:pointer;padding:0;"><i data-lucide="sun" class="theme-icon"
+              style="width:20px;height:20px;color:var(--text-muted)"></i></button>
+          <button class="ctrl-btn" data-dir-toggle
+            style="background:transparent;border:none;cursor:pointer;padding:0;"><i data-lucide="globe" class="dir-icon"
+              style="width:20px;height:20px;color:var(--text-muted)"></i></button>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-avatar-row">
+          <div class="user-av">JD</div>
+          <div>
+            <div class="user-name">John Davis</div>
+            <div class="user-role">End User — Starter Plan</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="dash-main">
+
+      <div class="dash-content">
+
+        <!-- VIEWS -->
+        <div id="view-dashboard" class="dash-view active">
+          <div class="dash-stats reveal">
+            <div class="d-stat">
+              <div class="d-stat-num" data-counter data-target="3">0</div>
+              <div class="d-stat-lbl">Open Tickets</div>
+              <div class="d-stat-change">↓ 2 from last week</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-num" data-counter data-target="99.7" data-suffix="%">0</div>
+              <div class="d-stat-lbl">System Uptime (30d)</div>
+              <div class="d-stat-change">✓ Excellent</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-num" data-counter data-target="18" data-suffix=" min">0</div>
+              <div class="d-stat-lbl">Avg Response Time</div>
+              <div class="d-stat-change">✓ Within SLA</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-num" data-counter data-target="24">0</div>
+              <div class="d-stat-lbl">Tickets Closed (30d)</div>
+              <div class="d-stat-change">↑ 6 more than last month</div>
+            </div>
+          </div>
+          <div class="dash-row reveal analytics-grid">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Ticket Types</span></div>
+              <div class="chart-container"><canvas id="chart-pie-tickets"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Resource Load</span></div>
+              <div class="chart-container"><canvas id="chart-pie-resources"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Security State</span></div>
+              <div class="chart-container"><canvas id="chart-pie-security"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Uptime Share</span></div>
+              <div class="chart-container"><canvas id="chart-pie-uptime"></canvas></div>
+            </div>
+          </div>
+          <div class="dash-row reveal">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Ticket Volume Trend</span></div>
+              <div style="padding:20px"><canvas id="chart-tickets-trend" height="200"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Quick Actions</span></div>
+              <div class="quick-actions">
+                <a href="#" class="qa-btn">
+                  <div class="qa-btn-icon"><i data-lucide="ticket"></i></div>
+                  <div class="qa-btn-text">Raise Ticket</div>
+                </a>
+                <a href="#" class="qa-btn">
+                  <div class="qa-btn-icon"><i data-lucide="phone"></i></div>
+                  <div class="qa-btn-text">Call Support</div>
+                </a>
+                <a href="#" class="qa-btn">
+                  <div class="qa-btn-icon"><i data-lucide="message-square"></i></div>
+                  <div class="qa-btn-text">Live Chat</div>
+                </a>
+                <a href="#" class="qa-btn">
+                  <div class="qa-btn-icon"><i data-lucide="help-circle"></i></div>
+                  <div class="qa-btn-text">Help Center</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-tickets" class="dash-view">
+          <div class="dash-stats reveal">
+            <div class="d-stat">
+              <div class="d-stat-num">45</div>
+              <div class="d-stat-lbl">Total Tickets</div>
+            </div>
+            <div class="d-stat gold">
+              <div class="d-stat-num">3</div>
+              <div class="d-stat-lbl">Currently Open</div>
+            </div>
+            <div class="d-stat green">
+              <div class="d-stat-num">12h</div>
+              <div class="d-stat-lbl">Avg Resolution</div>
+            </div>
+            <div class="d-stat blue">
+              <div class="d-stat-num">98%</div>
+              <div class="d-stat-lbl">Satisfaction</div>
+            </div>
+          </div>
+          <div class="dash-row reveal">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">My Tickets Lifecycle</span></div>
+              <div class="chart-container" style="height:280px"><canvas id="chart-tickets-status"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Recent Updates</span></div>
+              <div class="activity-list">
+                <div class="activity-item">
+                  <div class="act-dot ts-resolved"></div>
+                  <div>
+                    <div class="act-title">Ticket #T-4860 resolved</div>
+                    <div class="act-time">2 hours ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="act-dot ts-progress"></div>
+                  <div>
+                    <div class="act-title">Agent replied to #T-4892</div>
+                    <div class="act-time">5 hours ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="act-dot ts-open"></div>
+                  <div>
+                    <div class="act-title">New ticket #T-4892 created</div>
+                    <div class="act-time">Yesterday</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-cloud" class="dash-view">
+          <div class="dash-row reveal">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Resource Utilization History</span></div>
+              <div style="padding:20px"><canvas id="chart-cloud-usage" height="180"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Workload Distribution</span></div>
+              <div class="chart-container" style="height:280px"><canvas id="chart-cloud-dist"></canvas></div>
+            </div>
+          </div>
+          <div class="dash-stats reveal">
+            <div class="d-stat">
+              <div class="d-stat-lbl">Instance Uptime</div>
+              <div class="d-stat-num">99.9%</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-lbl">Daily Cost Estimate</div>
+              <div class="d-stat-num">$14.50</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-lbl">Active Instances</div>
+              <div class="d-stat-num">5</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-lbl">Network Traffic</div>
+              <div class="d-stat-num">1.2 TB</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-security" class="dash-view">
+          <div class="dash-row reveal">
+            <div class="d-panel" style="grid-column: span 2;">
+              <div class="d-panel-header"><span class="d-panel-title">Threat Detection History (Last 30 Days)</span>
+              </div>
+              <div style="padding:20px"><canvas id="chart-security-threats" height="120"></canvas></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px" class="reveal">
+            <div class="d-stat">
+              <div class="d-stat-num">0</div>
+              <div class="d-stat-lbl">Critical Vulnerabilities</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-num">94/100</div>
+              <div class="d-stat-lbl">Compliance Score</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-num">Active</div>
+              <div class="d-stat-lbl">Firewall Protection</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-backups" class="dash-view">
+          <div class="dash-row reveal analytics-grid">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Backup Type Share</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-backups-type"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Storage Location</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-backups-loc"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Retention Policy</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-backups-retention"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Compression Ratio</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-backups-compres"></canvas></div>
+            </div>
+          </div>
+          <div class="dash-row reveal">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Backup Success Trends</span></div>
+              <div style="padding:20px"><canvas id="chart-backups-success" height="200"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Storage Consumption Growth</span></div>
+              <div style="padding:20px"><canvas id="chart-backups-storage" height="200"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-notifications" class="dash-view">
+          <div class="dash-row reveal analytics-grid">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Notif. Categories</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-notif-cat"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Read Status</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-notif-status"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Priority Distribution</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-notif-urgency"></canvas></div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Notif. Timeline</span></div>
+              <div class="chart-container" style="height:220px"><canvas id="chart-notif-trend"></canvas></div>
+            </div>
+          </div>
+          <div class="d-panel reveal">
+            <div class="d-panel-header"><span class="d-panel-title">Recent Notifications</span></div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="act-dot" style="background:#EF4444"></div>
+                <div>
+                  <div class="act-title">Urgent: Security patch available for Cloud Instance v4</div>
+                  <div class="act-time">10 mins ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-dot" style="background:#F59E0B"></div>
+                <div>
+                  <div class="act-title">Warning: Storage quota reaching 85% on Backups cluster</div>
+                  <div class="act-time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-dot" style="background:#10B981"></div>
+                <div>
+                  <div class="act-title">Success: Monthly backup cycle completed successfully</div>
+                  <div class="act-time">Yesterday</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-dot" style="background:var(--accent-blue)"></div>
+                <div>
+                  <div class="act-title">Info: System maintenance scheduled for Sunday, 02:00 AM</div>
+                  <div class="act-time">2 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-settings" class="dash-view">
+          <div class="dash-row reveal">
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Account Security</span></div>
+              <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:600">Two-Factor Authentication</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Protect your account with an extra layer
+                    </div>
+                  </div>
+                  <span class="badge badge-green">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:600">Password Longevity</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Last changed 45 days ago</div>
+                  </div>
+                  <a href="#" style="color:var(--gold);font-size:0.8rem;font-weight:700">Update</a>
+                </div>
+              </div>
+            </div>
+            <div class="d-panel">
+              <div class="d-panel-header"><span class="d-panel-title">Notification Preferences</span></div>
+              <div style="padding:24px;display:flex;flex-direction:column;gap:12px">
+                <label style="display:flex;align-items:center;gap:12px;font-size:0.85rem"><input type="checkbox"
+                    checked> Email notifications for critical alerts</label>
+                <label style="display:flex;align-items:center;gap:12px;font-size:0.85rem"><input type="checkbox"
+                    checked> Weekly summary reports</label>
+                <label style="display:flex;align-items:center;gap:12px;font-size:0.85rem"><input type="checkbox"> Push
+                  notifications on mobile</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+
+  <script src="header.js"></script>
+  <script>
+    // --- Routing ---
+    const navLinks = document.querySelectorAll('.dash-link[data-view]');
+    const views = document.querySelectorAll('.dash-view');
+
+    function switchView(viewId) {
+      views.forEach(v => v.classList.remove('active'));
+      navLinks.forEach(l => l.classList.remove('active'));
+
+      const targetView = document.getElementById('view-' + viewId);
+      const activeLink = document.querySelector(`.dash-link[data-view="${viewId}"]`);
+
+      if (targetView) targetView.classList.add('active');
+      if (activeLink) activeLink.classList.add('active');
+
+      // Re-init charts if needed
+      initCharts(viewId);
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView(link.dataset.view);
+        if (window.innerWidth <= 768) {
+          document.getElementById('dash-sidebar').classList.remove('open');
+          document.getElementById('sidebar-toggle').style.display = 'flex';
+        }
+      });
+    });
+
+    // --- Charts ---
+    let charts = {};
+
+    function initCharts(viewId) {
+      const ctx_trend = document.getElementById('chart-tickets-trend');
+      if (ctx_trend && !charts['trend']) {
+        charts['trend'] = new Chart(ctx_trend, {
+          type: 'line',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+              label: 'Tickets',
+              data: [12, 19, 3, 5, 2, 3, 7],
+              borderColor: '#c9a84c',
+              backgroundColor: 'rgba(201, 168, 76, 0.1)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      }
+
+      const pieData = {
+        labels: ['A', 'B', 'C'],
+        datasets: [{
+          data: [300, 50, 100],
+          backgroundColor: ['#c9a84c', '#1e293b', '#3b82f6'],
+          borderWidth: 0
+        }]
+      };
+
+      const pieOptions = {
+        plugins: { legend: { display: false } },
+        cutout: '60%'
+      };
+
+      if (document.getElementById('chart-pie-tickets') && !charts['pie1']) {
+        charts['pie1'] = new Chart(document.getElementById('chart-pie-tickets'), {
+          type: 'doughnut',
+          data: { labels: ['Support', 'Feature', 'Billing'], datasets: [{ data: [65, 20, 15], backgroundColor: ['#c9a84c', '#3B82F6', '#10B981'], borderWidth: 0 }] },
+          options: pieOptions
+        });
+      }
+      if (document.getElementById('chart-pie-resources') && !charts['pie2']) {
+        charts['pie2'] = new Chart(document.getElementById('chart-pie-resources'), {
+          type: 'doughnut',
+          data: { labels: ['Used', 'Idle', 'Reserved'], datasets: [{ data: [45, 40, 15], backgroundColor: ['#EF4444', '#10B981', '#F59E0B'], borderWidth: 0 }] },
+          options: pieOptions
+        });
+      }
+      if (document.getElementById('chart-pie-security') && !charts['pie3']) {
+        charts['pie3'] = new Chart(document.getElementById('chart-pie-security'), {
+          type: 'doughnut',
+          data: { labels: ['Safe', 'Warning', 'Critical'], datasets: [{ data: [85, 10, 5], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'], borderWidth: 0 }] },
+          options: pieOptions
+        });
+      }
+      if (document.getElementById('chart-pie-uptime') && !charts['pie4']) {
+        charts['pie4'] = new Chart(document.getElementById('chart-pie-uptime'), {
+          type: 'doughnut',
+          data: { labels: ['Uptime', 'Maintenance', 'Down'], datasets: [{ data: [99, 0.8, 0.2], backgroundColor: ['#10B981', '#3B82F6', '#EF4444'], borderWidth: 0 }] },
+          options: pieOptions
+        });
+      }
+
+      const ctx_status = document.getElementById('chart-tickets-status');
+      if (ctx_status && !charts['status']) {
+        charts['status'] = new Chart(ctx_status, {
+          type: 'bar',
+          data: {
+            labels: ['Open', 'In Progress', 'Resolved'],
+            datasets: [{
+              data: [5, 12, 28],
+              backgroundColor: ['#EF4444', '#F59E0B', '#10B981'],
+              borderRadius: 6
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6B7A99' } },
+              x: { grid: { display: false }, ticks: { color: '#B0BCDB' } }
+            }
+          }
+        });
+      }
+
+      const ctx_cloud = document.getElementById('chart-cloud-usage');
+      if (ctx_cloud && !charts['cloud']) {
+        charts['cloud'] = new Chart(ctx_cloud, {
+          type: 'line',
+          data: {
+            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+            datasets: [{
+              label: 'CPU',
+              data: [30, 45, 32, 60, 48, 35],
+              borderColor: '#3B82F6',
+              tension: 0.4
+            }, {
+              label: 'RAM',
+              data: [50, 52, 58, 65, 62, 55],
+              borderColor: '#A855F7',
+              tension: 0.4
+            }]
+          },
+          options: { plugins: { legend: { display: false } } }
+        });
+      }
+
+      const ctx_cloud_dist = document.getElementById('chart-cloud-dist');
+      if (ctx_cloud_dist && !charts['cloud-dist']) {
+        charts['cloud-dist'] = new Chart(ctx_cloud_dist, {
+          type: 'polarArea',
+          data: {
+            labels: ['Compute', 'Storage', 'Networking', 'Database'],
+            datasets: [{
+              data: [40, 25, 20, 15],
+              backgroundColor: ['rgba(59, 130, 246, 0.6)', 'rgba(168, 85, 247, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(245, 158, 11, 0.6)'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            scales: { r: { grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { color: '#B0BCDB' } } },
+            plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 12 } } }
+          }
+        });
+      }
+
+      const ctx_security = document.getElementById('chart-security-threats');
+      if (ctx_security && !charts['security']) {
+        charts['security'] = new Chart(ctx_security, {
+          type: 'bar',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+              label: 'Blocked Attacks',
+              data: [450, 380, 520, 610],
+              backgroundColor: '#EF4444'
+            }]
+          },
+          options: { scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } }
+        });
+      }
+
+      const ctx_backups = document.getElementById('chart-backups-success');
+      if (ctx_backups && !charts['backups']) {
+        charts['backups'] = new Chart(ctx_backups, {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+              label: 'Success %',
+              data: [100, 98, 100, 100, 95, 100, 100],
+              backgroundColor: '#10B981'
+            }]
+          },
+          options: { scales: { y: { min: 90, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } }
+        });
+      }
+
+      const ctx_backups_storage = document.getElementById('chart-backups-storage');
+      if (ctx_backups_storage && !charts['backups-storage']) {
+        charts['backups-storage'] = new Chart(ctx_backups_storage, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+              label: 'Used Space (TB)',
+              data: [1.2, 1.5, 1.8, 2.1, 2.5],
+              borderColor: '#A855F7',
+              backgroundColor: 'rgba(168, 85, 247, 0.1)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: { scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } }
+        });
+      }
+
+      const ctx_notif_cat = document.getElementById('chart-notif-cat');
+      if (ctx_notif_cat && !charts['notif-cat']) {
+        charts['notif-cat'] = new Chart(ctx_notif_cat, {
+          type: 'doughnut',
+          data: {
+            labels: ['Security', 'System', 'Billing'],
+            datasets: [{
+              data: [15, 30, 10],
+              backgroundColor: ['#EF4444', '#3B82F6', '#10B981'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_notif_status = document.getElementById('chart-notif-status');
+      if (ctx_notif_status && !charts['notif-status']) {
+        charts['notif-status'] = new Chart(ctx_notif_status, {
+          type: 'doughnut',
+          data: {
+            labels: ['Read', 'Unread'],
+            datasets: [{
+              data: [85, 15],
+              backgroundColor: ['#10B981', 'rgba(255, 255, 255, 0.1)'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_backups_type = document.getElementById('chart-backups-type');
+      if (ctx_backups_type && !charts['backups-type']) {
+        charts['backups-type'] = new Chart(ctx_backups_type, {
+          type: 'doughnut',
+          data: {
+            labels: ['Full', 'Incr.', 'Diff.'],
+            datasets: [{
+              data: [40, 50, 10],
+              backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_backups_loc = document.getElementById('chart-backups-loc');
+      if (ctx_backups_loc && !charts['backups-loc']) {
+        charts['backups-loc'] = new Chart(ctx_backups_loc, {
+          type: 'doughnut',
+          data: {
+            labels: ['Cloud', 'On-site', 'Off-site'],
+            datasets: [{
+              data: [70, 20, 10],
+              backgroundColor: ['#A855F7', '#3B82F6', '#EF4444'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_backups_retention = document.getElementById('chart-backups-retention');
+      if (ctx_backups_retention && !charts['backups-retention']) {
+        charts['backups-retention'] = new Chart(ctx_backups_retention, {
+          type: 'pie',
+          data: {
+            labels: ['30 Days', '90 Days', '1 Year'],
+            datasets: [{
+              data: [60, 25, 15],
+              backgroundColor: ['#10B981', '#3B82F6', '#A855F7'],
+              borderWidth: 0
+            }]
+          },
+          options: { plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_backups_compres = document.getElementById('chart-backups-compres');
+      if (ctx_backups_compres && !charts['backups-compres']) {
+        charts['backups-compres'] = new Chart(ctx_backups_compres, {
+          type: 'doughnut',
+          data: {
+            labels: ['Compressed', 'Redundant'],
+            datasets: [{
+              data: [78, 22],
+              backgroundColor: ['#c9a84c', 'rgba(255, 255, 255, 0.05)'],
+              borderWidth: 0
+            }]
+          },
+          options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_notif_urgency = document.getElementById('chart-notif-urgency');
+      if (ctx_notif_urgency && !charts['notif-urgency']) {
+        charts['notif-urgency'] = new Chart(ctx_notif_urgency, {
+          type: 'pie',
+          data: {
+            labels: ['High', 'Medium', 'Low'],
+            datasets: [{
+              data: [5, 25, 70],
+              backgroundColor: ['#EF4444', '#F59E0B', '#3B82F6'],
+              borderWidth: 0
+            }]
+          },
+          options: { plugins: { legend: { position: 'bottom', labels: { color: '#B0BCDB', boxWidth: 10 } } } }
+        });
+      }
+
+      const ctx_notif_trend = document.getElementById('chart-notif-trend');
+      if (ctx_notif_trend && !charts['notif-trend']) {
+        charts['notif-trend'] = new Chart(ctx_notif_trend, {
+          type: 'line',
+          data: {
+            labels: ['01', '02', '03', '04', '05', '06'],
+            datasets: [{
+              label: 'Alerts',
+              data: [4, 8, 3, 12, 7, 5],
+              borderColor: '#10B981',
+              tension: 0.4
+            }]
+          },
+          options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        });
+      }
+    }
+
+    // Initial load
+    window.addEventListener('load', () => {
+      initCharts('dashboard');
+    });
+
+    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+      document.getElementById('dash-sidebar').classList.add('open');
+      document.getElementById('sidebar-toggle').style.display = 'none';
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar-close').style.display = 'block';
+      }
+    });
+
+    document.getElementById('sidebar-close').addEventListener('click', () => {
+      document.getElementById('dash-sidebar').classList.remove('open');
+      document.getElementById('sidebar-toggle').style.display = 'flex';
+      document.getElementById('sidebar-close').style.display = 'none';
+    });
+  </script>
+</body>
+
+</html>

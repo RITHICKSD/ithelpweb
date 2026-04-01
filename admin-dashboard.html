@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex IT — Executive Admin OS</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --admin-gold: #D4AF37;
+      --admin-gold-glow: rgba(212, 175, 55, 0.3);
+      --sidebar-width: 280px;
+
+      /* Dark Theme (Default) */
+      --bg-primary: #05070A;
+      --bg-sidebar: linear-gradient(180deg, #0A0F1A 0%, #05070A 100%);
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --border-main: rgba(255, 255, 255, 0.08);
+      --text-main: #E2E8F0;
+      --text-muted: #A0AEC0;
+      --text-dim: #718096;
+      --glass-hover: rgba(255, 255, 255, 0.05);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #F8FAFC;
+      --bg-sidebar: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
+      --bg-card: #FFFFFF;
+      --border-main: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-dim: #64748B;
+      --glass-hover: #F1F5F9;
+    }
+
+    html, body {
+      background: var(--bg-primary);
+      overflow-x: hidden;
+      width: 100%;
+      margin: 0;
+      color: var(--text-main);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-main);
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+    }
+
+    .admin-logo {
+      padding: 18px 24px 8px;
+    }
+
+    /* Reuse Global Logo Styles with local adjustments if needed */
+    .admin-logo .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .admin-logo .logo-icon {
+      background: linear-gradient(135deg, var(--admin-gold), #8A6D2F);
+      color: #000;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      box-shadow: 0 0 20px var(--admin-gold-glow);
+    }
+
+    .admin-logo .logo-text {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .admin-logo .logo-text span {
+      color: var(--admin-gold);
+    }
+
+    .admin-nav {
+      flex: 1;
+      padding: 0 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .nav-group-label {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #4A5568;
+      margin: 10px 0 4px 14px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item:hover {
+      color: var(--text-main);
+      background: var(--glass-hover);
+    }
+
+    .nav-item.active {
+      color: var(--admin-gold);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 25%;
+      height: 50%;
+      width: 4px;
+      background: var(--admin-gold);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .nav-item-icon {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2px;
+    }
+
+    .admin-sidebar-actions {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      height: 45px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 12px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--glass-hover);
+      border-color: var(--admin-gold);
+      color: var(--text-main);
+    }
+
+    .admin-sidebar-footer {
+      padding: 30px;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--admin-gold), #8A6D2F);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #000;
+      box-shadow: 0 0 20px var(--admin-gold-glow);
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .profile-role {
+      font-size: 0.75rem;
+      color: #718096;
+    }
+
+    /* Main Content */
+    .admin-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Topbar */
+    .admin-topbar {
+      height: 80px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(5, 7, 10, 0.8);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-left h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: #A0AEC0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .topbar-btn:hover {
+      border-color: var(--admin-gold);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--glass-border);
+    }
+
+    /* Views */
+    .view-content {
+      padding: 40px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .admin-view {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .admin-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 20px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+      background: var(--bg-card);
+      transform: translateY(-4px);
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, var(--admin-gold-glow), transparent 70%);
+      opacity: 0.2;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text-main);
+      margin: 10px 0;
+    }
+
+    .stat-meta {
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-up {
+      color: #10B981;
+    }
+
+    .meta-down {
+      color: #EF4444;
+    }
+
+    /* Chart Containers */
+    .chart-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-main);
+      border-radius: 24px;
+      padding: 30px;
+      height: 420px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .chart-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chart-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #718096;
+      border: 1px solid var(--glass-border);
+    }
+
+    .chart-tab.active {
+      background: var(--admin-gold);
+      color: #000;
+      border-color: var(--admin-gold);
+    }
+
+    /* Panels */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    /* Mobile */
+    .mobile-nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--admin-gold);
+      color: #000;
+      border: none;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      box-shadow: 0 10px 30px var(--admin-gold-glow);
+    }
+
+    /* RTL Support */
+    [dir="rtl"] .admin-sidebar {
+      left: auto;
+      right: 0;
+      border-right: none;
+      border-left: 1px solid var(--border-main);
+    }
+
+    [dir="rtl"] .admin-main {
+      margin-left: 0;
+      margin-right: var(--sidebar-width);
+    }
+
+    [dir="rtl"] .mobile-nav-toggle {
+      left: auto;
+      right: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+        box-shadow: none;
+      }
+
+      [dir="rtl"] .admin-sidebar {
+        transform: translateX(100%);
+      }
+
+      .admin-sidebar.open {
+        transform: translateX(0);
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+      }
+
+      [dir="rtl"] .admin-sidebar.open {
+        box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+      }
+
+      .admin-sidebar.open ~ .mobile-nav-toggle {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s;
+      }
+
+      .sidebar-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .admin-main {
+        width: 100%;
+        max-width: 100vw;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-top: 10px;
+        flex: none;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-nav-toggle {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .view-content {
+        padding: 20px;
+      }
+
+      .chart-box {
+        padding: 20px;
+        height: 350px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Modern Table Style */
+    .admin-table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 16px 20px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #718096;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .admin-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--glass-border);
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+
+    .status-warning {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4A5568;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-layout">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-logo">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">A</div>
+          <span class="logo-text">Apex<span>IT</span></span>
+        </a>
+      </div>
+
+      <nav class="admin-nav" id="admin-nav">
+        <div class="nav-group-label">Core Operations</div>
+        <a class="nav-item active" data-view="overview">
+          <i data-lucide="layout-grid" class="nav-item-icon"></i> Command Center
+        </a>
+        <a class="nav-item" data-view="users">
+          <i data-lucide="users" class="nav-item-icon"></i> User Directory
+        </a>
+        <a class="nav-item" data-view="tickets">
+          <i data-lucide="ticket" class="nav-item-icon"></i> Control Desk
+        </a>
+
+        <div class="nav-group-label">Infrastructure</div>
+        <a class="nav-item" data-view="infrastructure">
+          <i data-lucide="cloud" class="nav-item-icon"></i> Cloud Fabric
+        </a>
+        <a class="nav-item" data-view="security">
+          <i data-lucide="shield-check" class="nav-item-icon"></i> Vault / SIEM
+        </a>
+
+        <div class="nav-group-label">Intelligence & Finance</div>
+        <a class="nav-item" data-view="financials">
+          <i data-lucide="bar-chart-3" class="nav-item-icon"></i> Revenue Ops
+        </a>
+        <a class="nav-item" data-view="projects">
+          <i data-lucide="briefcase" class="nav-item-icon"></i> Project Pulse
+        </a>
+        <a href="index.html" class="nav-item" style="color:#EF4444">
+          <i data-lucide="log-out" class="nav-item-icon"></i> Logout
+        </a>
+
+        <div class="nav-group-label">System Controls</div>
+        <div class="admin-sidebar-actions">
+          <button class="action-btn" data-dir-toggle title="Switch Direction">
+            <i data-lucide="globe" style="width:20px"></i>
+          </button>
+          <button class="action-btn" data-theme-toggle title="Toggle Appearance">
+            <i data-lucide="sun" class="theme-icon" style="width:20px"></i>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+
+      <div class="view-content" id="view-content">
+
+        <!-- 1. OVERVIEW VIEW -->
+        <div id="view-overview" class="admin-view active">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Active Deployments</div>
+              <div class="stat-value">1,284</div>
+              <div class="stat-meta meta-up"><i data-lucide="trending-up" style="width:14px"></i> +12% vs last month
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Global Traffic</div>
+              <div class="stat-value">42.8 GB/s</div>
+              <div class="stat-meta meta-up"><i data-lucide="trending-up" style="width:14px"></i> +5.2% Peak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Secure Endpoints</div>
+              <div class="stat-value">15.4k</div>
+              <div class="stat-meta meta-up"><i data-lucide="shield" style="width:14px"></i> 100% Protected</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">System Health</div>
+              <div class="stat-value">99.98%</div>
+              <div class="stat-meta meta-up"><i data-lucide="check-circle" style="width:14px"></i> Operational</div>
+            </div>
+          </div>
+
+          <div class="panel-grid">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Global Resource Utilization</h3>
+                <div class="chart-controls">
+                  <div class="chart-tab active">Hourly</div>
+                  <div class="chart-tab">Weekly</div>
+                </div>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-overview-main"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Traffic Distribution</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-overview-dist"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. USERS VIEW -->
+        <div id="view-users" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Entities</div>
+              <div class="stat-value">8,420</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Now</div>
+              <div class="stat-value">2,148</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Admin Entities</div>
+              <div class="stat-value">42</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Guest Access</div>
+              <div class="stat-value">128</div>
+            </div>
+          </div>
+          <div class="panel-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Growth Projection</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-users-growth"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Department Share</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-users-dept"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. TICKETS VIEW -->
+        <div id="view-tickets" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Incoming Volume</div>
+              <div class="stat-value">420</div>
+              <div class="stat-meta">Tickets today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Avg. Resolution</div>
+              <div class="stat-value">1.4h</div>
+              <div class="stat-meta">Industry leading</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Escalations</div>
+              <div class="stat-value">12</div>
+              <div class="stat-meta meta-down">Critical items</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">CSAT Score</div>
+              <div class="stat-value">4.9/5</div>
+              <div class="stat-meta meta-up">Max Satisfaction</div>
+            </div>
+          </div>
+          <div class="chart-box" style="margin-bottom: 24px;">
+            <div class="chart-header">
+              <h3>Resolution Performance</h3>
+            </div>
+            <div style="height: calc(100% - 70px)"><canvas id="chart-tickets-perf"></canvas></div>
+          </div>
+        </div>
+
+        <!-- 4. INFRASTRUCTURE VIEW -->
+        <div id="view-infrastructure" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Node Integrity</div>
+              <div class="stat-value">100%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Storage Cluster</div>
+              <div class="stat-value">84%</div>
+              <div class="stat-meta">Used capacity</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Network Lag</div>
+              <div class="stat-value">4ms</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Memory Load</div>
+              <div class="stat-value">62%</div>
+            </div>
+          </div>
+          <div class="panel-grid">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Compute Load (Real-time)</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-infra-load"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Storage Distribution</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-infra-storage"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. SECURITY VIEW -->
+        <div id="view-security" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Threats Blocked</div>
+              <div class="stat-value">4.2k</div>
+              <div class="stat-meta">Last 24h</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Encryption Level</div>
+              <div class="stat-value">AES-256</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Open Ports</div>
+              <div class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Risk Index</div>
+              <div class="stat-value">Low</div>
+            </div>
+          </div>
+          <div class="panel-grid" style="grid-template-columns: 1.5fr 1fr;">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Intrusion Detection Trends</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-security-threats"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Vulnerability Profile</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-security-vuln"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. FINANCIALS VIEW -->
+        <div id="view-financials" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Annual Recurring Revenue</div>
+              <div class="stat-value">$24.8M</div>
+              <div class="stat-meta meta-up"><i data-lucide="trending-up" style="width:14px"></i> +18% QoQ</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Operational Expense</div>
+              <div class="stat-value">$12.4M</div>
+              <div class="stat-meta meta-down"><i data-lucide="trending-down" style="width:14px"></i> -4% Optimized</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Net Profit Margin</div>
+              <div class="stat-value">34.2%</div>
+              <div class="stat-meta meta-up"><i data-lucide="activity" style="width:14px"></i> Stable</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Projected Burn</div>
+              <div class="stat-value">$1.2M</div>
+              <div class="stat-meta">Monthly avg</div>
+            </div>
+          </div>
+          <div class="panel-grid">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Revenue vs OPEX Trends</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-financials-main"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Cost Allocation</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-financials-dist"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. PROJECTS VIEW -->
+        <div id="view-projects" class="admin-view">
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <div class="stat-label">Active Initiatives</div>
+              <div class="stat-value">24</div>
+              <div class="stat-meta">6 nearing launch</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Average Velocity</div>
+              <div class="stat-value">84%</div>
+              <div class="stat-meta meta-up"><i data-lucide="zap" style="width:14px"></i> +5% efficiency</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Resource Assigned</div>
+              <div class="stat-value">92%</div>
+              <div class="stat-meta">Optimized load</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Critical Risks</div>
+              <div class="stat-value">2</div>
+              <div class="stat-meta meta-down">Mitigation active</div>
+            </div>
+          </div>
+          <div class="panel-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Milestone Progression</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-projects-milestones"></canvas></div>
+            </div>
+            <div class="chart-box">
+              <div class="chart-header">
+                <h3>Workload Distribution</h3>
+              </div>
+              <div style="height: calc(100% - 70px)"><canvas id="chart-projects-workload"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Mobile Button -->
+    <button class="mobile-nav-toggle" id="sidebar-toggle">
+      <i data-lucide="menu"></i>
+    </button>
+  </div>
+
+  <script src="header.js"></script>
+  <script src="admin-dash.js"></script>
+</body>
+
+</html>
