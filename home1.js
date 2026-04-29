@@ -30,21 +30,6 @@ function initMarquee() {
   inner.addEventListener('mouseleave', () => inner.style.animationPlayState = 'running');
 }
 
-// ── Smooth active nav for anchor sections ──
-function initActiveNav() {
-  const sections = document.querySelectorAll('section[id]');
-  if (!sections.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
-        if (link) link.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-50% 0px -50% 0px' });
-  sections.forEach(s => io.observe(s));
-}
 
 // ── Network map node animation ──
 function initNetworkNodes() {
@@ -58,6 +43,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initDevOpsBars();
   initMarquee();
   initNetworkNodes();
-  // Small delay to let layout settle
-  setTimeout(initActiveNav, 300);
 });

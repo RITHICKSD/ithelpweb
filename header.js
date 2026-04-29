@@ -149,6 +149,90 @@ function initHeaderScroll() {
   }, { passive: true });
 }
 
+// ── Active Nav Highlight ──
+function initActiveNav() {
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+
+  // Map filenames → which nav href to highlight
+  const desktopMap = {
+    'index.html':           'index.html',
+    'home2.html':           'index.html',   // home2 → highlight Home
+    'about.html':           'about.html',
+    'services.html':        'services.html',
+    'contact.html':         'contact.html',
+    'user-dashboard.html':  '#',            // dashboard parent uses href="#"
+    'admin-dashboard.html': '#',
+    'login.html':           null,           // login has no nav link
+  };
+
+  const targetHref = desktopMap[page];
+  if (!targetHref) return;
+
+  // ── Desktop nav — parent link ──
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === targetHref) {
+      link.classList.add('active');
+    }
+  });
+
+  // ── Desktop nav — dropdown sub-link ──
+  // Clear any previous active dropdown item first
+  document.querySelectorAll('.dropdown a').forEach(a => a.classList.remove('active'));
+
+  // Map pages that live inside a dropdown → the exact href of their sub-link
+  const dropdownSubMap = {
+    'index.html':           'index.html',           // Home 1
+    'home2.html':           'home2.html',           // Home 2
+    'user-dashboard.html':  'user-dashboard.html',  // User Dashboard
+    'admin-dashboard.html': 'admin-dashboard.html', // Admin Dashboard
+  };
+  const subHref = dropdownSubMap[page];
+  if (subHref) {
+    document.querySelectorAll('.dropdown a').forEach(a => {
+      if (a.getAttribute('href') === subHref) a.classList.add('active');
+    });
+  }
+
+  // ── Mobile nav ──
+  // Map filenames → mobile link href or toggle id
+  const mobileMap = {
+    'index.html':           { type: 'toggle', id: 'mob-home-drop', linkHref: 'index.html'  },
+    'home2.html':           { type: 'toggle', id: 'mob-home-drop', linkHref: 'home2.html'  },
+    'about.html':           { type: 'link',   href: 'about.html'    },
+    'services.html':        { type: 'link',   href: 'services.html' },
+    'contact.html':         { type: 'link',   href: 'contact.html'  },
+    'user-dashboard.html':  { type: 'toggle', id: 'mob-dash-drop', linkHref: 'user-dashboard.html'  },
+    'admin-dashboard.html': { type: 'toggle', id: 'mob-dash-drop', linkHref: 'admin-dashboard.html' },
+  };
+
+  // Remove any existing mobile active
+  document.querySelectorAll('.mobile-nav-link, .mobile-dropdown a').forEach(el => {
+    el.classList.remove('active');
+  });
+
+  const mob = mobileMap[page];
+  if (!mob) return;
+
+  if (mob.type === 'link') {
+    // Direct link (About, Services, Contact)
+    document.querySelectorAll('.mobile-nav-link').forEach(el => {
+      if (el.getAttribute('href') === mob.href) el.classList.add('active');
+    });
+  } else if (mob.type === 'toggle') {
+    // Dropdown parent (Home, Dashboard) — highlight the toggle div
+    const toggle = document.querySelector(`[data-toggle="${mob.id}"]`);
+    if (toggle) toggle.classList.add('active');
+    // Also highlight the specific sub-link inside the dropdown
+    const drop = document.getElementById(mob.id);
+    if (drop) {
+      drop.querySelectorAll('a').forEach(a => {
+        if (a.getAttribute('href') === mob.linkHref) a.classList.add('active');
+      });
+    }
+  }
+}
+
 // ── Init All ──
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
@@ -159,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProgressBars();
   initFAQ();
   initHeaderScroll();
+  initActiveNav();
 
   // Bind buttons
   document.querySelectorAll('[data-theme-toggle]').forEach(btn => btn.addEventListener('click', toggleTheme));
