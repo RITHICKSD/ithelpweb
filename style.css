@@ -179,13 +179,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* Header Controls */
 .header-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .ctrl-btn {
-  width: 40px; height: 40px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   color: var(--text-secondary);
   border: 1px solid var(--border);
   background: var(--bg-card);
   transition: var(--transition);
-  font-size: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
 }
 .ctrl-btn:hover { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(201,168,76,0.2); }
 .btn-login {

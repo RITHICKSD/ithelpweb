@@ -174,17 +174,19 @@
     }
 
     .action-btn {
-      flex: 1;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       background: var(--bg-card);
       border: 1px solid var(--border-main);
-      border-radius: 12px;
+      border-radius: 50%;
       color: var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
 
     .action-btn:hover {
@@ -670,12 +672,10 @@
         </a>
 
         <div class="nav-group-label">System Controls</div>
-        <div class="admin-sidebar-actions">
-          <button class="action-btn" data-dir-toggle title="Switch Direction">
-            <i data-lucide="globe" style="width:20px"></i>
-          </button>
+        <div class="admin-sidebar-actions" style="justify-content: flex-start; gap: 15px;">
+          <button class="action-btn" data-dir-toggle title="Switch Direction">LTR</button>
           <button class="action-btn" data-theme-toggle title="Toggle Appearance">
-            <i data-lucide="sun" class="theme-icon" style="width:20px"></i>
+            <i data-lucide="sun" class="theme-icon" style="width:18px"></i>
           </button>
         </div>
       </nav>

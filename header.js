@@ -39,11 +39,10 @@ function toggleDir() {
   }, 100);
 }
 function updateDirIcon(dir) {
-  const icons = document.querySelectorAll('.dir-icon');
-  icons.forEach(el => {
-    el.setAttribute('data-lucide', 'globe');
+  const btns = document.querySelectorAll('[data-dir-toggle]');
+  btns.forEach(btn => {
+    btn.textContent = dir.toUpperCase();
   });
-  if (window.lucide) lucide.createIcons();
 }
 
 // ── Mobile Menu ──
