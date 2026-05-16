@@ -11,8 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --admin-gold: #D4AF37;
-      --admin-gold-glow: rgba(212, 175, 55, 0.3);
+      --admin-primary: #2563EB;
+      --admin-primary-glow: rgba(37, 99, 235, 0.3);
       --sidebar-width: 280px;
 
       /* Dark Theme (Default) */
@@ -81,8 +81,8 @@
     }
 
     .admin-logo .logo-icon {
-      background: linear-gradient(135deg, var(--admin-gold), #8A6D2F);
-      color: #000;
+      background: linear-gradient(135deg, var(--admin-primary), var(--accent));
+      color: #FFFFFF;
       width: 40px;
       height: 40px;
       display: flex;
@@ -91,7 +91,7 @@
       font-weight: 900;
       border-radius: 10px;
       font-size: 0.9rem;
-      box-shadow: 0 0 20px var(--admin-gold-glow);
+      box-shadow: 0 0 20px var(--admin-primary-glow);
     }
 
     .admin-logo .logo-text {
@@ -101,7 +101,7 @@
     }
 
     .admin-logo .logo-text span {
-      color: var(--admin-gold);
+      color: var(--admin-primary);
     }
 
     .admin-nav {
@@ -144,9 +144,9 @@
     }
 
     .nav-item.active {
-      color: var(--admin-gold);
-      background: rgba(212, 175, 55, 0.08);
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: var(--admin-primary);
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.2);
     }
 
     .nav-item.active::before {
@@ -156,7 +156,7 @@
       top: 25%;
       height: 50%;
       width: 4px;
-      background: var(--admin-gold);
+      background: var(--admin-primary);
       border-radius: 0 4px 4px 0;
     }
 
@@ -191,7 +191,7 @@
 
     .action-btn:hover {
       background: var(--glass-hover);
-      border-color: var(--admin-gold);
+      border-color: var(--admin-primary);
       color: var(--text-main);
     }
 
@@ -211,13 +211,13 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--admin-gold), #8A6D2F);
+      background: linear-gradient(135deg, var(--admin-primary), var(--accent));
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      color: #000;
-      box-shadow: 0 0 20px var(--admin-gold-glow);
+      color: #FFFFFF;
+      box-shadow: 0 0 20px var(--admin-primary-glow);
     }
 
     .profile-info {
@@ -284,7 +284,7 @@
     }
 
     .topbar-btn:hover {
-      border-color: var(--admin-gold);
+      border-color: var(--admin-primary);
       color: #fff;
       transform: translateY(-2px);
     }
@@ -342,7 +342,7 @@
     }
 
     .stat-card:hover {
-      border-color: rgba(212, 175, 55, 0.4);
+      border-color: rgba(37, 99, 235, 0.4);
       background: var(--bg-card);
       transform: translateY(-4px);
     }
@@ -354,7 +354,7 @@
       right: -50%;
       width: 120px;
       height: 120px;
-      background: radial-gradient(circle, var(--admin-gold-glow), transparent 70%);
+      background: radial-gradient(circle, var(--admin-primary-glow), transparent 70%);
       opacity: 0.2;
     }
 
@@ -426,9 +426,9 @@
     }
 
     .chart-tab.active {
-      background: var(--admin-gold);
-      color: #000;
-      border-color: var(--admin-gold);
+      background: var(--admin-primary);
+      color: #FFFFFF;
+      border-color: var(--admin-primary);
     }
 
     /* Panels */
@@ -445,8 +445,8 @@
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: var(--admin-gold);
-      color: #000;
+      background: var(--admin-primary);
+      color: #FFFFFF;
       border: none;
       align-items: center;
       justify-content: center;
@@ -454,7 +454,7 @@
       top: 20px;
       left: 20px;
       z-index: 1100;
-      box-shadow: 0 10px 30px var(--admin-gold-glow);
+      box-shadow: 0 10px 30px var(--admin-primary-glow);
     }
 
     /* RTL Support */
