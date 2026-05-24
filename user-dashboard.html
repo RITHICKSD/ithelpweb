@@ -34,6 +34,13 @@
       transition: transform 0.3s ease;
     }
 
+    /* Security grid (3-up -> stack to 1 on narrow screens) */
+    .security-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    @media (max-width: 420px) {
+      .security-grid { grid-template-columns: 1fr; }
+    }
+
     [dir="rtl"] .dash-sidebar {
       left: auto;
       right: 0;
@@ -164,17 +171,12 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(12px);
-    }
-
-    .topbar-title {
-      font-size: 1rem;
-      font-weight: 700;
-      flex: 1;
+      justify-content: flex-end; /* align controls to the right when title removed */
     }
 
     .topbar-controls {
       display: flex;
-      gap: 10px;
+      gap: 14px;
       align-items: center;
     }
 
@@ -519,6 +521,12 @@
         grid-template-columns: 1fr 1fr;
       }
 
+      /* Compact topbar on small screens: reduce padding and hide profile text */
+      .dash-topbar { padding: 0 12px; }
+      .topbar-controls { gap: 8px; }
+      .topbar-profile-text { display: none; }
+      .ctrl-btn { padding: 8px; min-width: 40px; height: 40px; }
+
       .dash-content {
         padding: 80px 16px 20px;
       }
@@ -528,6 +536,20 @@
       .dash-stats {
         grid-template-columns: 1fr;
       }
+    }
+
+    /* Small-screen fixes (360px devices) */
+    @media (max-width: 420px) {
+      .dash-content { padding: 20px 12px; }
+      .dash-row { grid-template-columns: 1fr; gap: 12px; }
+      .dash-stats { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .d-panel { padding: 0; }
+      .ticket-row { padding: 10px 12px; gap: 8px; }
+      .ticket-id { width: 50px; font-size: 0.72rem; }
+      .ticket-date { display: none; }
+      .ticket-title { overflow-wrap: anywhere; word-break: break-word; font-size: 0.85rem; }
+      .chart-container { padding: 12px; }
+      .activity-list { padding: 12px; }
     }
 
     .dash-view {
@@ -617,25 +639,25 @@
         <a href="index.html" class="dash-link" style="color:var(--danger)"><i data-lucide="log-out"
             class="dash-link-icon"></i>Logout</a>
         <div style="flex:1"></div>
-        <div
-          style="display:flex;align-items:center;justify-content:flex-start;gap:20px;padding:24px 14px;border-top:1px solid rgba(255,255,255,0.05)">
-          <button class="ctrl-btn" data-theme-toggle><i data-lucide="sun" class="theme-icon"></i></button>
-          <button class="ctrl-btn" data-dir-toggle>LTR</button>
-        </div>
       </nav>
-      <div class="sidebar-footer">
-        <div class="user-avatar-row">
-          <div class="user-av">JD</div>
-          <div>
-            <div class="user-name">John Davis</div>
-            <div class="user-role">End User — Starter Plan</div>
-          </div>
-        </div>
-      </div>
     </aside>
 
     <!-- Main -->
     <div class="dash-main">
+
+      <div class="dash-topbar">
+        <div class="topbar-controls">
+          <button class="ctrl-btn" data-dir-toggle title="Toggle RTL/LTR">LTR</button>
+          <button class="ctrl-btn" data-theme-toggle title="Toggle Theme"><i data-lucide="sun" class="theme-icon"></i></button>
+          <div class="topbar-profile" style="display:flex;align-items:center;gap:12px;margin-left:12px">
+            <div class="user-av">JD</div>
+            <div class="topbar-profile-text" style="text-align:left">
+              <div class="user-name">John Davis</div>
+              <div class="user-role" style="font-size:0.72rem;color:var(--text-muted)">End User — Starter Plan</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="dash-content">
 
@@ -862,7 +884,7 @@
               <div style="padding:20px"><canvas id="chart-security-threats" height="120"></canvas></div>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px" class="reveal">
+          <div class="security-grid reveal">
             <div class="d-stat">
               <div class="d-stat-num">0</div>
               <div class="d-stat-lbl">Critical Vulnerabilities</div>

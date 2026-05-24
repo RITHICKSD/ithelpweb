@@ -253,6 +253,15 @@
       background: rgba(37, 99, 235, 0.05);
     }
 
+    .sso-apple {
+      background: #000000;
+      color: #ffffff;
+      border-color: rgba(0,0,0,0.1);
+    }
+    .sso-apple:hover {
+      background: #111111;
+    }
+
     .register-form {
       display: none;
     }
@@ -350,6 +359,7 @@
           </div>
           <button type="button" class="login-btn" onclick="doLogin()">Sign In to Portal →</button>
           <div class="login-divider"><span>or continue with</span></div>
+          <button type="button" class="sso-btn sso-apple"><i data-lucide="apple" style="width:16px;height:16px"></i> Sign in with Apple</button>
           <button type="button" class="sso-btn"><i data-lucide="mail" style="width:16px;height:16px"></i> Sign in with Google</button>
           <button type="button" class="sso-btn"><i data-lucide="facebook" style="width:16px;height:16px"></i> Sign in with Facebook</button>
         </form>
@@ -380,6 +390,7 @@
           </div>
           <button type="button" class="login-btn">Create Account →</button>
           <div class="login-divider"><span>or register with</span></div>
+          <button type="button" class="sso-btn sso-apple"><i data-lucide="apple" style="width:16px;height:16px"></i> Sign up with Apple</button>
           <button type="button" class="sso-btn"><i data-lucide="mail" style="width:16px;height:16px"></i> Sign up with Google</button>
           <button type="button" class="sso-btn"><i data-lucide="facebook" style="width:16px;height:16px"></i> Sign up with Facebook</button>
         </form>

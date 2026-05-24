@@ -57,6 +57,31 @@
     .svc-cta p { color:var(--text-secondary); max-width:500px; margin:0 auto 36px; }
     @media(max-width:1024px){ .svc-item,.svc-item.reverse { grid-template-columns:1fr; gap:40px; direction:ltr; } .mini-svcs-grid { grid-template-columns:repeat(2,1fr); } }
     @media(max-width:768px){ .mini-svcs-grid { grid-template-columns:1fr 1fr; } }
+    /* Mobile fixes: remove horizontal scroll and ensure all elements fit mobile width */
+    @media (max-width: 420px) {
+      /* Ensure hero is pushed below fixed header and title fits on small screens */
+      .services-hero { padding: calc(64px + 12px) 0 40px; }
+      .services-hero .container .section-title { font-size: 1.6rem !important; line-height: 1.15; }
+      .services-hero .container { padding: 0 12px; }
+      /* Header adjustments for small screens to avoid misalignment */
+      .header-inner { padding: 0 12px; gap: 12px; }
+      .logo-icon { width: 32px; height: 32px; font-size: 1rem; }
+      .logo-text { font-size: 1rem; }
+      .header-controls { gap: 8px; }
+      .header-controls .btn-login { display: none; }
+      .svc-list { padding: 40px 0; }
+      .svc-item { padding: 24px 0; gap: 16px; }
+      .svc-visual { padding: 12px; border-radius: 12px; }
+      .svc-content-desc { margin-bottom: 16px; }
+      .mini-svcs { padding: 40px 0; }
+      .mini-svcs-grid { grid-template-columns: 1fr; gap: 12px; }
+      .mini-svc { padding: 18px; border-radius: 12px; }
+      .sla-section { padding: 40px 0; }
+      .svc-cta { padding: 40px 12px; }
+      .dropdown { left: 0; right: auto; }
+      img { max-width: 100%; height: auto; display: block; }
+      html, body { overflow-x: hidden; }
+    }
   </style>
 </head>
 <body>
@@ -94,7 +119,6 @@
   <div class="services-hero-bg"></div>
   <div class="container">
     <div class="reveal">
-      <div class="section-tag"><i data-lucide="shield" style="width:16px;height:16px;vertical-align:middle;margin-right:8px"></i> Full-Spectrum IT Services</div>
       <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem)">Enterprise IT <span>Services & Solutions</span></h1>
       <div class="primary-divider" style="margin:16px auto"></div>
       <p class="svc-intro">From day-to-day managed support to complex multi-cloud transformation, Apex IT delivers the expertise and technology to keep your business operating at peak performance.</p>

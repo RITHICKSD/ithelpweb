@@ -244,6 +244,25 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeaderScroll();
   initActiveNav();
 
+  // Desktop/touch: toggle dropdowns on click for medium screens (fixes 1024px touch hover issues)
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const link = item.querySelector('.nav-link');
+    const dd = item.querySelector('.dropdown');
+    if (!link || !dd) return;
+    link.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024) {
+        e.preventDefault();
+        item.classList.toggle('open');
+      }
+    });
+  });
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-item.open').forEach(i => {
+      if (!i.contains(e.target)) i.classList.remove('open');
+    });
+  });
+
   // Bind buttons
   document.querySelectorAll('[data-theme-toggle]').forEach(btn => btn.addEventListener('click', toggleTheme));
   document.querySelectorAll('[data-dir-toggle]').forEach(btn => btn.addEventListener('click', toggleDir));

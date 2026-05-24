@@ -26,6 +26,13 @@
       --glass-hover: rgba(255, 255, 255, 0.05);
     }
 
+    @media (max-width: 768px) {
+      .admin-topbar { padding: 0 12px; }
+      .topbar-right { gap: 10px; }
+      .topbar-profile-text { display: none; }
+      .topbar-btn { width: 40px; height: 40px; }
+    }
+
     [data-theme="light"] {
       --bg-primary: #F8FAFC;
       --bg-sidebar: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
@@ -248,7 +255,7 @@
       padding: 0 40px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end; /* right-align controls when title removed */
       border-bottom: 1px solid var(--glass-border);
       background: rgba(5, 7, 10, 0.8);
       backdrop-filter: blur(20px);
@@ -266,7 +273,7 @@
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
     .topbar-btn {
@@ -537,6 +544,17 @@
       }
     }
 
+    /* Small-screen adjustments for 360px width */
+    @media (max-width: 420px) {
+      .admin-topbar { padding: 8px 16px; height: 64px; }
+      .topbar-left h1 { font-size: 1rem; }
+      .view-content { padding: 12px; }
+      .dashboard-grid { grid-template-columns: 1fr; gap: 12px; }
+      .chart-box { padding: 12px; height: auto; }
+      .panel-grid { grid-template-columns: 1fr; gap: 12px; }
+      .admin-table th, .admin-table td { padding: 10px; font-size: 0.85rem; }
+    }
+
     @media (max-width: 640px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
@@ -672,17 +690,26 @@
         </a>
 
         <div class="nav-group-label">System Controls</div>
-        <div class="admin-sidebar-actions" style="justify-content: flex-start; gap: 15px;">
-          <button class="action-btn" data-dir-toggle title="Switch Direction">LTR</button>
-          <button class="action-btn" data-theme-toggle title="Toggle Appearance">
-            <i data-lucide="sun" class="theme-icon" style="width:18px"></i>
-          </button>
-        </div>
       </nav>
     </aside>
 
     <!-- Main -->
     <main class="admin-main">
+
+      <div class="admin-topbar">
+        <div class="topbar-right">
+          <button class="topbar-btn" data-dir-toggle title="Toggle RTL/LTR">LTR</button>
+          <button class="topbar-btn" data-theme-toggle title="Toggle Theme"><i data-lucide="sun" style="width:16px"></i></button>
+          <div class="topbar-divider"></div>
+          <div class="topbar-profile" style="display:flex;align-items:center;gap:12px">
+            <div class="profile-avatar">JD</div>
+            <div class="topbar-profile-text" style="text-align:left">
+              <div class="profile-name">John Davis</div>
+              <div class="profile-role">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="view-content" id="view-content">
 
